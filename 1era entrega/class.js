@@ -23,7 +23,7 @@ class ProductManager  {
         return this.products.find(prod => prod.id === idProd) ?? new Error('Producto no encontrado')
     }   
 }
-const productManager1 = new ProductManager
+const productManager1 = new ProductManager()
 
 let product = {
     title:'fideos',
@@ -41,11 +41,12 @@ productManager1.addProduct(product)
 /* se chequea en el carrito el producto agregado */
 productManager1.getProducts()
 /* se chequea que el código no sea el mismo */
-productManager1.addProduct({ ...product, code: 'nuevo codigo'});
+productManager1.addProduct({ ...product, code:'le pongo un nuevo code'});
 /* se chequea que ambos productos estèn dentro del carrito */
 productManager1.getProducts()
 /* Se busca un productp en particular de acuerdo a su ID */
 productManager1.getProductById(2)
+console.log(productManager1.getProducts());
 
 
 
