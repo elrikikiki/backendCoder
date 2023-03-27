@@ -1,5 +1,6 @@
-const { json } = require('stream/consumers');
-const fs = require('fs').promises
+import express from "express";
+import fs from 'fs/promises'
+
 
 class ProductManager {
     idAuto = 1;
@@ -103,15 +104,35 @@ const product = {
     thumbnail:'img prueba',
     code:'abc123'
 }
-
 const main = async () => {
-    /* await productManager1.addProduct({...product, code:'aasffjkgatdsdfgn'}) */
-    /* await productManager1.updateProduct(5,{...product, code:'MODIFICADO', title: 'prod sin prueba'}) 
-     await productManager1.deleteProduct(5) 
-    await productManager1.getProducts() */
-    await productManager1.getProducts()
-    /*  await productManager1.addProduct({...product, code:'segundo'})  */
-    console.log(await productManager1.getProductById(1))
-     /* await productManager1.getProductById(4)   */  
+     /* await productManager1.addProduct({...product, code:'TercerProd'}) 
+     await productManager1.addProduct({...product, code:'CuartoProd'}) 
+     await productManager1.addProduct({...product, code:'QuintoProd'})  */
+     await productManager1.getProducts()
 }
 main()
+
+const app = express()
+
+app.use(express.urlencoded({extended:true}))
+app.get('/products', async (req,res)=>{
+    let AllProds = await productManager1.getProducts()
+    let limit = req.query.limit;
+
+    // Si se proporciona el parámetro "?limit=", limitar el número de productos
+    if (limit) {
+      AllProds = AllProds.slice(0,limit)
+    }
+    res.send(AllProds)
+});
+
+/* No se escribe el "idProd", solo pones el num de ID */
+app.get('/:idProd', async (req,res)=> {
+    const idProd = +req.params.idProd
+    const idSelected = await productManager1.getProductById(idProd)
+    res.send(idSelected)
+});
+
+app.listen(8082,()=> {
+    console.log('listen on port 8082');
+})
