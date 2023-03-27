@@ -1,6 +1,4 @@
-import express from "express";
 import fs from 'fs/promises'
-
 
 class ProductManager {
     idAuto = 1;
@@ -96,43 +94,5 @@ class ProductManager {
         await fs.writeFile(this.path, JSON.stringify(deletedProduct))
      }
 }
-const productManager1 = new ProductManager()
 
-const product = {
-    title:'prod prueba',
-    description: 'texto prueba',
-    thumbnail:'img prueba',
-    code:'abc123'
-}
-const main = async () => {
-     /* await productManager1.addProduct({...product, code:'TercerProd'}) 
-     await productManager1.addProduct({...product, code:'CuartoProd'}) 
-     await productManager1.addProduct({...product, code:'QuintoProd'})  */
-     await productManager1.getProducts()
-}
-main()
-
-const app = express()
-
-app.use(express.urlencoded({extended:true}))
-app.get('/products', async (req,res)=>{
-    let AllProds = await productManager1.getProducts()
-    let limit = req.query.limit;
-
-    // Si se proporciona el parámetro "?limit=", limitar el número de productos
-    if (limit) {
-      AllProds = AllProds.slice(0,limit)
-    }
-    res.send(AllProds)
-});
-
-/* No se escribe el "idProd", solo pones el num de ID */
-app.get('/:idProd', async (req,res)=> {
-    const idProd = +req.params.idProd
-    const idSelected = await productManager1.getProductById(idProd)
-    res.send(idSelected)
-});
-
-app.listen(8082,()=> {
-    console.log('listen on port 8082');
-})
+export default ProductManager
