@@ -47,7 +47,6 @@ class ProductManager {
         catch (e) {
             throw new Error(e)
         }
-
     }
     async getProductById(id){
         try{
@@ -71,7 +70,7 @@ class ProductManager {
         {
         const productFile = await fs.readFile(this.path, 'utf-8')
         let products = JSON.parse(productFile)
-        const idProduct = products.findIndex((p)=> p.id=== id)
+        const idProduct = products.findIndex((p)=> p.id === id)
 
         products.splice(idProduct,1,{id, ...product});
 
