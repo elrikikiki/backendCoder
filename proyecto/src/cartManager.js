@@ -19,38 +19,7 @@ class CartManager  {
         await fs.writeFile(this.path, '[]')
         return 'No existe el archivo, ya se creó un array vacio'
     }
-    }
-
-    async addProductToCart(product)
-    {
-        try{
-            /* const productFile = await fs.readFile(this.path, 'utf-8')
-            let newProduct = JSON.parse(productFile) */
-            const productFile = await productManager1.getProducts()
-            let newProduct = JSON.parse(productFile)
-            const valid = newProduct.find(
-                p => p.id === product.id || p.code === product.code
-            );
-
-            if(valid) {
-                throw new Error('Error, tenes el id o el code igual')
-            }
-
-            if(newProduct.length > 0){
-                const lastProduct = newProduct[newProduct.length - 1]
-                this.idAuto = lastProduct.id + 1;
-            }
-
-            newProduct.push({
-                ...product, id: this.idAuto++
-            })
-
-            await fs.writeFile(this.path, JSON.stringify(newProduct))
-        }
-        catch (e) {
-            throw new Error(e)
-        }
-    }
+    };
 
     async getCartProductById(id)
     {
@@ -58,10 +27,10 @@ class CartManager  {
             const productFile = await fs.readFile(this.path, 'utf-8')
             let idProduct = JSON.parse(productFile)
             const searchProd = idProduct.find(
-                (p) => p.id === id
+                (p) => p.idCart === id
             )
             if(!searchProd) {
-                throw new Error('No encontre ese producto')
+                throw new Error('No encontre ese carrito')
             }
             return searchProd;
         }
@@ -69,12 +38,48 @@ class CartManager  {
             throw new Error(e)
         }
     }
+
+    async addProductToCart(idCart, idProduct) {
+        const productFile = await fs.readFile(this.path, 'utf-8');
+        let newCart = JSON.parse(productFile);
+        const quantity = 1;
+        
+        // Buscar si el producto ya está en el carrito
+        let productIndex = -1;
+        for (let i = 0; i < newCart.length; i++) {
+          const cart = newCart[i];
+          const products = cart.products;
+          for (let j = 0; j < products.length; j++) {
+            const product = products[j];
+            if (product.idProduct === idProduct) {
+              productIndex = j;
+              break;
+            }
+          }
+          if (productIndex >= 0) {
+            break;
+          }
+        }
+      
+        // Agregar el producto o incrementar la cantidad
+        if (productIndex >= 0) {
+          newCart[productIndex].products[0].quantity += quantity;
+        } else {
+          newCart.push({
+            idCart,
+            products: [
+              {
+                idProduct,
+                quantity
+              }
+            ]
+          });
+        }
+      
+        await fs.writeFile(this.path, JSON.stringify(newCart));
+        productIndex = -1; // reiniciar el valor de productIndex
+      }
+
+   
 };
-const cartManager1 = new CartManager()
-const main = async () => {
-   await cartManager1.getCartProducts()
-}
-console.log(await cartManager1.getCartProducts());
-
-
 export default CartManager

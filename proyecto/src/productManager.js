@@ -1,7 +1,6 @@
 import fs from 'fs/promises'
 
 class ProductManager {
-    idAuto = 1;
     #products;
     path= ``;
 

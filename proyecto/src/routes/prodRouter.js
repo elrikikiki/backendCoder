@@ -20,31 +20,33 @@ prodRouter.get('/:idProd', async (req,res)=> {
 });
 
 prodRouter.post('/',async(req,res)=>{
-    /* const {name, descri} = req.body
-    const prod = {name,descri} */
     const newProduct = req.body
     await productManager1.addProduct(newProduct)
     res.send(newProduct)
 });
 
 prodRouter.put('/:pid', async (req,res)=>{
-    let pid = +req.params.pid;
-    const idSelected = await productManager1.getProductById(pid)
+    /* let pid = +req.params.pid;
+    const idSelected = await productManager1.getProductById(pid).id
     let prod = req.body;
-    await productManager1.updateProduct(idSelected,prod)
-     if (!idSelected) {
-        return res.status(400).send({status:'error', error:'valores incompletos mostro'});
-    }  
+    await productManager1.updateProduct(idSelected,prod) */
+    let pid = +req.params.pid;
+    const {id}= await productManager1.getProductById(pid)
+    let prod = req.body
+    await productManager1.updateProduct(id,prod)
+    /*  if (!idSelected) {
+        return res.status(400).send({status:'error', error:'valores incompletos'});
+    }   */
     res.status(200).json(prod)
 }); 
 
 prodRouter.delete('/:pid', async (req, res) => {
     let pid = +req.params.pid;
-    const idSelected = await productManager1.getProductById(pid);
-    if (!idSelected) {
+    const {id} = await productManager1.getProductById(pid);
+    /* if (!idSelected) {
       return res.status(400).send({ status: 'error', error: 'El producto no existe' });
-    }
-    const deleteId = await productManager1.deleteProduct(idSelected);
-    res.send(idSelected);
+    } */
+   await productManager1.deleteProduct(id);
+    res.status(200).json(id)
   });
 export default prodRouter
