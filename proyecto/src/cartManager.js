@@ -40,46 +40,33 @@ class CartManager  {
     }
 
     async addProductToCart(idCart, idProduct) {
-        const productFile = await fs.readFile(this.path, 'utf-8');
-        let newCart = JSON.parse(productFile);
-        const quantity = 1;
-        
-        // Buscar si el producto ya está en el carrito
-        let productIndex = -1;
-        for (let i = 0; i < newCart.length; i++) {
-          const cart = newCart[i];
-          const products = cart.products;
-          for (let j = 0; j < products.length; j++) {
-            const product = products[j];
-            if (product.idProduct === idProduct) {
-              productIndex = j;
-              break;
-            }
-          }
-          if (productIndex >= 0) {
-            break;
-          }
-        }
-      
-        // Agregar el producto o incrementar la cantidad
-        if (productIndex >= 0) {
-          newCart[productIndex].products[0].quantity += quantity;
-        } else {
-          newCart.push({
-            idCart,
-            products: [
-              {
-                idProduct,
-                quantity
-              }
-            ]
-          });
-        }
-      
-        await fs.writeFile(this.path, JSON.stringify(newCart));
-        productIndex = -1; // reiniciar el valor de productIndex
+      const productFile = await fs.readFile(this.path, 'utf-8');
+      let newCart = JSON.parse(productFile);
+      const quantity = 1;
+    
+      // Buscamos si existe un objeto en el carrito con el idProduct que queremos agregar
+      const productIndex = newCart.findIndex(
+        (cartItem) => cartItem.products[0].idProduct === idProduct
+      );
+    
+      if (productIndex >= 0) {
+        // Si ya existe un objeto con el idProduct, actualizamos la cantidad
+        newCart[productIndex].products[0].quantity += quantity;
+      } else {
+        // Si no existe un objeto con el idProduct, agregamos un nuevo objeto al carrito
+        newCart.push({
+          ...idCart,
+          products: [
+            {
+              idProduct,
+              quantity: quantity,
+            },
+          ],
+        });
       }
-
+    
+      await fs.writeFile(this.path, JSON.stringify(newCart));
+    }
    
 };
 export default CartManager

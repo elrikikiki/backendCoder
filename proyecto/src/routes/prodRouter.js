@@ -49,4 +49,5 @@ prodRouter.delete('/:pid', async (req, res) => {
    await productManager1.deleteProduct(id);
     res.status(200).json(id)
   });
+
 export default prodRouter
