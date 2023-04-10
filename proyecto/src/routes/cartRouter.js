@@ -23,14 +23,19 @@ cartRouter.get('/:cid',async(req,res)=>{
 });
 
 //post
+cartRouter.post('/', async (rej,res)=>{
+  await cartManager1.addCart()
+  res.send()
+})
+
+//post
 cartRouter.post('/:cid/product/:pid',async (req,res)=>{
   const idCart = +req.params.cid
   const idProduct = +req.params.pid;
   const {id} = await productManager1.getProductById(idProduct);
 
   const addProductToCart = await cartManager1.addProductToCart(
-    idCart,
-    id
+     idProduct
   );
   if(addProductToCart instanceof Error){
     return res
