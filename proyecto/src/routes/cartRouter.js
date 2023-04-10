@@ -25,7 +25,7 @@ cartRouter.get('/:cid',async(req,res)=>{
 //post
 cartRouter.post('/', async (rej,res)=>{
   await cartManager1.addCart()
-  res.send()
+  res.send({status:'succes', message:'carrito añadido'})
 })
 
 //post
@@ -34,9 +34,7 @@ cartRouter.post('/:cid/product/:pid',async (req,res)=>{
   const idProduct = +req.params.pid;
   const {id} = await productManager1.getProductById(idProduct);
 
-  const addProductToCart = await cartManager1.addProductToCart(
-     idProduct
-  );
+  const addProductToCart = await cartManager1.addProductToCart(idCart,idProduct);
   if(addProductToCart instanceof Error){
     return res
     .status(400)

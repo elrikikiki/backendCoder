@@ -3,10 +3,10 @@ import ProductManager from './productManager.js';
 const productManager1 = new ProductManager()
 class CartManager  {
     idAuto = 1;
-    cartProducts =[]
+    #cartProducts
     path= ``;
     constructor(){
-    
+      this.#cartProducts =[]
         this.path = `./src/cart.json`
     }
    async getCartProducts()
@@ -43,35 +43,44 @@ class CartManager  {
         const productFile = await fs.readFile(this.path, 'utf-8');
         let newCart = JSON.parse(productFile);
         newCart.push({
-          id: Date.now(),
-          products: this.cartProducts
+          idCart: Date.now(),
+          products: this.#cartProducts
         });
 
         await fs.writeFile(this.path, JSON.stringify(newCart))
       };
       
-     async addProductToCart(idProduct) {
-      const productFile = await fs.readFile(this.path, 'utf-8');
-      this.cartProducts = JSON.parse(productFile);
-      const quantity = 1;
-    
-      // Buscamos si existe un objeto en el carrito con el idProduct que queremos agregar
-      const productIndex = this.cartProducts.findIndex(
-        (cartItem) => cartItem.idProduct === idProduct
-      );
-      if (productIndex >= 0) {
-        // Si ya existe un objeto con el idProduct, actualizamos la cantidad
-        this.cartProducts[productIndex].quantity += quantity;
-      } else {
-        // Si no existe un objeto con el idProduct, agregamos un nuevo objeto al carrito
-        this.cartProducts.push({
+      async addProductToCart(idCart, idProduct) {
+        const productFile = await fs.readFile(this.path, 'utf-8');
+        const carts = JSON.parse(productFile);
+      
+        // Encontrar el objeto con el idCart correspondiente
+        const cartIndex = carts.findIndex((cart) => cart.idCart === idCart);
+        if (cartIndex >= 0) {
+          // Si el objeto existe, actualizar la propiedad products
+          const cart = carts[cartIndex];
+          const cartProducts = cart.products;
+      
+          // Buscar si existe un objeto en el carrito con el idProduct que queremos agregar
+          const productIndex = cartProducts.findIndex(
+            (cartItem) => cartItem.idProduct === idProduct
+          );
+          if (productIndex >= 0) {
+            // Si ya existe un objeto con el idProduct, actualizamos la cantidad
+            cartProducts[productIndex].quantity++;
+          } else {
+            // Si no existe un objeto con el idProduct, agregamos un nuevo objeto al carrito
+            cartProducts.push({
               idProduct,
-              quantity: quantity,
-        });
+              quantity: 1,
+            });
+          }
+      
+          // Actualizar el archivo con el carrito actualizado
+          await fs.writeFile(this.path, JSON.stringify(carts));
+        } else {
+          console.log(`El carrito con id ${idCart} no existe.`);
+        }
       }
-    
-      await fs.writeFile(this.path, JSON.stringify(this.cartProducts));
-    } 
-   
 };
 export default CartManager
