@@ -21,7 +21,7 @@ class CartManager  {
     }
     };
 
-    async getCartProductById(id)
+    async getCartById(id)
     {
         try{
             const productFile = await fs.readFile(this.path, 'utf-8')
@@ -38,7 +38,6 @@ class CartManager  {
             throw new Error(e)
         }
     }
-
     async addProductToCart(idCart, idProduct) {
       const productFile = await fs.readFile(this.path, 'utf-8');
       let newCart = JSON.parse(productFile);
@@ -55,7 +54,7 @@ class CartManager  {
       } else {
         // Si no existe un objeto con el idProduct, agregamos un nuevo objeto al carrito
         newCart.push({
-          ...idCart,
+          idCart,
           products: [
             {
               idProduct,

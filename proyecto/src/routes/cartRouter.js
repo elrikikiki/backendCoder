@@ -15,10 +15,10 @@ cartRouter.get('/',async(req,res)=> {
     }
     res.send(AllProds)
 });
-
+// get
 cartRouter.get('/:cid',async(req,res)=>{
     const cid = +req.params.cid
-    const idSelected = await cartManager1.getCartProductById(cid)
+    const idSelected = await cartManager1.getCartById(cid)
     res.status(200).json(idSelected)
 });
 
