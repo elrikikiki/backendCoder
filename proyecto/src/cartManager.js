@@ -27,7 +27,7 @@ class CartManager  {
             const productFile = await fs.readFile(this.path, 'utf-8')
             let idProduct = JSON.parse(productFile)
             const searchProd = idProduct.find(
-                (p) => p.id === id
+                (p) => p.idCart === id
             )
             if(!searchProd) {
                 throw new Error('No encontre ese carrito')
