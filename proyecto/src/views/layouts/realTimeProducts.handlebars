@@ -1,0 +1,21 @@
+    <h1>Acá se van agregando o eliminando productos</h1>
+    <p> {{products}} </p>
+    <form action="">
+        <input type="number" placeholder="número del id a borrar">
+    </form>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js" integrity="sha512-..."></script>
+    <script>
+        const socket = io()
+        socket.emit('message', 'Hola desde el cliente');
+        socket.on('evento_socket_individual', (data)=>{
+            console.log(data)
+        });
+
+        socket.on('evento_para_todos_menos_el_socket_actual', (data)=>{
+            console.log(data)
+        });
+
+        socket.on('evento-para-todos', (data)=>{
+            console.log(data)
+        });
+    </script>
